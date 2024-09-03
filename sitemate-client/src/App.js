@@ -10,7 +10,13 @@ function App() {
   useEffect(() => {
     fetch(API_URL)
       .then((response) => response.json())
-      .then((data) => setIssues(data))
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setIssues(data);
+        } else {
+          console.error("API response is not an array:", data);
+        }
+      })
       .catch((error) => console.error("Error fetching issues:", error));
   }, []);
 
