@@ -8,6 +8,8 @@ function App() {
   const [newIssue, setNewIssue] = useState({ title: "", description: "" });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentIssue, setCurrentIssue] = useState(null);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   useEffect(() => {
     fetch(API_URL)
@@ -16,10 +18,10 @@ function App() {
         if (Array.isArray(data)) {
           setIssues(data);
         } else {
-          console.error("API response is not an array:", data);
+          setError("Unexpected response format from API.");
         }
       })
-      .catch((error) => console.error("Error fetching issues:", error));
+      .catch((error) => setError("Error fetching issues: " + error.message));
   }, []);
 
   const handleCreate = () => {
@@ -28,12 +30,16 @@ function App() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: issues.length + 1, ...newIssue }),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to create issue.");
+        return response.json();
+      })
       .then((data) => {
         setIssues([...issues, data]);
         setNewIssue({ title: "", description: "" });
+        setSuccess("Issue created successfully!");
       })
-      .catch((error) => console.error("Error creating issue:", error));
+      .catch((error) => setError("Error creating issue: " + error.message));
   };
 
   const handleUpdate = () => {
@@ -43,22 +49,30 @@ function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(currentIssue),
       })
-        .then((response) => response.json())
+        .then((response) => {
+          if (!response.ok) throw new Error("Failed to update issue.");
+          return response.json();
+        })
         .then((data) => {
           setIssues(
             issues.map((issue) => (issue.id === data.id ? data : issue))
           );
           setIsModalOpen(false);
           setCurrentIssue(null);
+          setSuccess("Issue updated successfully!");
         })
-        .catch((error) => console.error("Error updating issue:", error));
+        .catch((error) => setError("Error updating issue: " + error.message));
     }
   };
 
   const handleDelete = (id) => {
     fetch(`${API_URL}/${id}`, { method: "DELETE" })
-      .then(() => setIssues(issues.filter((issue) => issue.id !== id)))
-      .catch((error) => console.error("Error deleting issue:", error));
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to delete issue.");
+        setIssues(issues.filter((issue) => issue.id !== id));
+        setSuccess("Issue deleted successfully!");
+      })
+      .catch((error) => setError("Error deleting issue: " + error.message));
   };
 
   const openUpdateModal = (issue) => {
@@ -73,6 +87,8 @@ function App() {
   return (
     <div className="container">
       <h1>Issues</h1>
+      {error && <h4 className="error-message">{error}</h4>}
+      {success && <h4 className="success-message">{success}</h4>}
       <ul>
         {issues.map((issue) => (
           <li key={issue.id}>
