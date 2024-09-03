@@ -111,11 +111,14 @@ describe("App Component Tests", () => {
     fireEvent.click(createButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/Test Issue/i)).toBeInTheDocument();
+      const title = screen.getAllByText(/Test Issue/i)[1];
+      expect(title).toBeInTheDocument();
     });
 
     await waitFor(() => {
-      expect(screen.getByText(/Test Description/i)).toBeInTheDocument();
+      const description = screen.getAllByText(/Test Description/i)[1];
+
+      expect(description).toBeInTheDocument();
     });
   });
   // because of time constraints i could not add test for update and delete
