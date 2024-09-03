@@ -1,70 +1,112 @@
-# Getting Started with Create React App
+## Issue Tracker
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### Technology Choices
 
-## Available Scripts
+### Frontend: React
 
-In the project directory, you can run:
+- Used for building the user interface with a component-based architecture.
+- Backend: Node.js (Express)
+- Serves as a simple backend API to handle CRUD operations.
+- Data Storage: In-memory (for simplicity)
+- Issues are stored in memory for the duration of the server's runtime.
 
-### `npm start`
+### API Design
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- The API provides endpoints to perform CRUD operations on issues. Each issue has the following properties:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- id (number): Unique identifier for the issue.
+- title (string): The title of the issue.
+- description (string): A detailed description of the issue.
 
-### `npm test`
+### Endpoints
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1.  GET /issues
 
-### `npm run build`
+- Description: Fetch all issues.
+- Response: An array of issue objects.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+2.  POST /issues
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Description: Create a new issue.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- Request Body:
 
-### `npm run eject`
+```json
+{
+  "id": 1,
+  "title": "Issue Title",
+  "description": "Issue Description"
+}
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- Response: The created issue object.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+3. PUT /issues/
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- Description: Update an existing issue by ID.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- Request Body:
 
-## Learn More
+```json
+{
+  "id": 1,
+  "title": "Updated Title",
+  "description": "Updated Description"
+}
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- Response: The updated issue object.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+4. DELETE /issues/
 
-### Code Splitting
+- Description: Delete an issue by ID.
+- Response: No content (status 204).
+- Demonstration of Each Operation
+- Fetch Issues:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- On page load, the App component fetches and displays all issues from the API.
 
-### Analyzing the Bundle Size
+##### Create an Issue:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- Enter a title and description in the form fields and click the "Create" button.
+- The form fields will be cleared upon successful creation.
 
-### Making a Progressive Web App
+##### Update an Issue:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- Click the "Update" button next to an issue.
+- The issue will be updated with a new title and description.
 
-### Advanced Configuration
+##### Delete an Issue:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- Click the "Delete" button next to an issue.
+- The issue will be removed from the list.
 
-### Deployment
+### Improvements
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+#### Data Persistence:
 
-### `npm run build` fails to minify
+- Currently, the backend uses in-memory storage. For a production-ready application, consider integrating a database (e.g., MongoDB, PostgreSQL) for persistent storage.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+#### Error Handling:
+
+- Enhance error handling and user feedback for operations (e.g., showing error messages in the UI).
+
+#### Form Validation:
+
+- Add form validation to ensure that required fields are filled out correctly before submission.
+
+#### API Rate Limiting:
+
+- Implement rate limiting to prevent abuse of the API.
+
+#### User Authentication:
+
+- Implement user authentication and authorization to secure API endpoints and manage user-specific data.
+
+#### Enhanced UI/UX:
+
+- Improve the user interface with better styling and user experience enhancements.
+
+#### Testing:
+
+- Add comprehensive unit and integration tests for both frontend and backend to ensure stability and reliability.
