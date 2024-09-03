@@ -27,7 +27,10 @@ function App() {
       body: JSON.stringify({ id: issues.length + 1, ...newIssue }),
     })
       .then((response) => response.json())
-      .then((data) => setIssues([...issues, data]))
+      .then((data) => {
+        setIssues([...issues, data]);
+        setNewIssue({ title: "", description: "" });
+      })
       .catch((error) => console.error("Error creating issue:", error));
   };
 
