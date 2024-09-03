@@ -3,7 +3,7 @@ import "./App.css";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-function App() {
+const App = () => {
   const [issues, setIssues] = useState([]);
   const [newIssue, setNewIssue] = useState({ title: "", description: "" });
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -181,6 +181,6 @@ function App() {
       )}
     </div>
   );
-}
+};
 
 export default App;
