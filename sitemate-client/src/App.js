@@ -100,13 +100,13 @@ const App = () => {
             </span>
             <div>
               <button
-                class="primary-button"
+                className="primary-button"
                 onClick={() => openUpdateModal(issue)}
               >
                 Update
               </button>
               <button
-                class="danger-button"
+                className="danger-button"
                 onClick={() => handleDelete(issue.id)}
               >
                 Delete
@@ -137,9 +137,9 @@ const App = () => {
               }
             />
           </div>
-          <div class="button-container">
+          <div className="button-container">
             <button
-              class="primary-button"
+              className="primary-button"
               onClick={handleCreate}
               disabled={!newIssue.title || !newIssue.description}
             >
@@ -166,14 +166,14 @@ const App = () => {
             onChange={handleInputChange}
             placeholder="Description"
           />
-          <div class="button-container">
+          <div className="button-container">
             <button
-              class="secondary-button"
+              className="secondary-button"
               onClick={() => setIsModalOpen(false)}
             >
               Cancel
             </button>
-            <button class="primary-button" onClick={handleUpdate}>
+            <button className="primary-button" onClick={handleUpdate}>
               Save Changes
             </button>
           </div>
