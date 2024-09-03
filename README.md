@@ -2,15 +2,15 @@
 
 ### Technology Choices
 
-### Frontend: React
+#### Frontend: React
 
 - Used for building the user interface with a component-based architecture.
 
-### Backend: Node.js (Express)
+#### Backend: Node.js (Express)
 
 - Serves as a simple backend API to handle CRUD operations.
 
-### Data Storage: In-memory (for simplicity)
+#### Data Storage: In-memory (for simplicity)
 
 - Issues are stored in memory for the duration of the server's runtime.
 
