@@ -99,8 +99,18 @@ function App() {
               {issue.title} - {issue.description}
             </span>
             <div>
-              <button onClick={() => openUpdateModal(issue)}>Update</button>
-              <button onClick={() => handleDelete(issue.id)}>Delete</button>
+              <button
+                class="primary-button"
+                onClick={() => openUpdateModal(issue)}
+              >
+                Update
+              </button>
+              <button
+                class="danger-button"
+                onClick={() => handleDelete(issue.id)}
+              >
+                Delete
+              </button>
             </div>
           </li>
         ))}
@@ -127,7 +137,15 @@ function App() {
               }
             />
           </div>
-          <button onClick={handleCreate}>Create</button>
+          <div class="button-container">
+            <button
+              class="primary-button"
+              onClick={handleCreate}
+              disabled={!newIssue.title || !newIssue.description}
+            >
+              Create
+            </button>
+          </div>
         </>
       )}
 
@@ -148,8 +166,17 @@ function App() {
             onChange={handleInputChange}
             placeholder="Description"
           />
-          <button onClick={handleUpdate}>Save Changes</button>
-          <button onClick={() => setIsModalOpen(false)}>Cancel</button>
+          <div class="button-container">
+            <button
+              class="secondary-button"
+              onClick={() => setIsModalOpen(false)}
+            >
+              Cancel
+            </button>
+            <button class="primary-button" onClick={handleUpdate}>
+              Save Changes
+            </button>
+          </div>
         </div>
       )}
     </div>
