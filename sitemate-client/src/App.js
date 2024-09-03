@@ -13,13 +13,12 @@ function App() {
 
   useEffect(() => {
     fetch(API_URL)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to create issue.");
+        return response.json();
+      })
       .then((data) => {
-        if (Array.isArray(data)) {
-          setIssues(data);
-        } else {
-          setError("Unexpected response format from API.");
-        }
+        setIssues(data);
       })
       .catch((error) => setError("Error fetching issues: " + error.message));
   }, []);
@@ -69,9 +68,13 @@ function App() {
     fetch(`${API_URL}/${id}`, { method: "DELETE" })
       .then((response) => {
         if (!response.ok) throw new Error("Failed to delete issue.");
-        setIssues(issues.filter((issue) => issue.id !== id));
+
+        setIssues((prevIssues) =>
+          prevIssues.filter((issue) => issue.id !== id)
+        );
         setSuccess("Issue deleted successfully!");
       })
+
       .catch((error) => setError("Error deleting issue: " + error.message));
   };
 

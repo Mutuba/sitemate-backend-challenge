@@ -26,6 +26,7 @@ const deleteIssue = (id) => {
   const index = issues.findIndex((issue) => issue.id === id);
   if (index !== -1) {
     issues.splice(index, 1);
+
     return true;
   }
   return false;

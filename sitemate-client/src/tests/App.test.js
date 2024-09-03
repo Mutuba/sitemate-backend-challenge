@@ -1,69 +1,12 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import App from "../App";
+import { mockFetch } from "./fetchMocks";
 
 describe("App Component Tests", () => {
   beforeEach(() => {
-    global.fetch = jest.fn((url, options) => {
-      if (url === "http://localhost:3001/issues" && !options) {
-        return Promise.resolve({
-          json: () =>
-            Promise.resolve([
-              {
-                id: 1,
-                title: "Test Issue 1",
-                description: "Test Description 1",
-              },
-              {
-                id: 2,
-                title: "Test Issue 2",
-                description: "Test Description 2",
-              },
-            ]),
-        });
-      }
-
-      if (url === "http://localhost:3001/issues" && options.method === "POST") {
-        return Promise.resolve({
-          json: () =>
-            Promise.resolve({
-              id: 3,
-              title: "Test Issue",
-              description: "Test Description",
-            }),
-        });
-      }
-
-      if (
-        url.startsWith("http://localhost:3001/issues/") &&
-        options.method === "PUT"
-      ) {
-        return Promise.resolve({
-          json: () =>
-            Promise.resolve({
-              id: parseInt(url.split("/").pop(), 10),
-              title: `Updated ${url.split("/").pop()}`,
-              description: `Updated description ${url.split("/").pop()}`,
-            }),
-        });
-      }
-
-      if (url.startsWith("http://localhost:3001/issues/")) {
-        const id = parseInt(url.split("/").pop(), 10);
-        return Promise.resolve({
-          json: () =>
-            Promise.resolve({
-              id,
-              title: `Test Issue ${id}`,
-              description: `Test Description ${id}`,
-            }),
-        });
-      }
-
-      return Promise.reject(new Error("Unknown URL"));
-    });
+    mockFetch();
   });
-
   afterEach(() => {
     jest.restoreAllMocks();
   });
@@ -72,6 +15,25 @@ describe("App Component Tests", () => {
     render(<App />);
     await waitFor(() => {
       expect(screen.getByText(/Issues/i)).toBeInTheDocument();
+    });
+  });
+
+  test("renders existing issues", async () => {
+    render(<App />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Test Issue 1/)).toBeInTheDocument();
+    });
+    await waitFor(() => {
+      expect(screen.getByText(/Test Issue 2/)).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText(/Test Description 1/)).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText(/Test Description 2/)).toBeInTheDocument();
     });
   });
 
@@ -104,22 +66,66 @@ describe("App Component Tests", () => {
       target: { value: "Test Description" },
     });
 
-    fireEvent.change(titleInput, { target: { value: "Test Issue" } });
-    fireEvent.change(descriptionInput, {
-      target: { value: "Test Description" },
-    });
     fireEvent.click(createButton);
 
     await waitFor(() => {
-      const title = screen.getAllByText(/Test Issue/i)[1];
-      expect(title).toBeInTheDocument();
+      expect(screen.getByText(/Test Issue/i)).toBeInTheDocument();
     });
 
     await waitFor(() => {
-      const description = screen.getAllByText(/Test Description/i)[1];
-
-      expect(description).toBeInTheDocument();
+      expect(screen.getByText(/Test Description/i)).toBeInTheDocument();
     });
   });
+
   // because of time constraints i could not add test for update and delete
+
+  test("updates an issue", async () => {
+    render(<App />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Test Issue 1/)).toBeInTheDocument();
+    });
+    const updateButton = screen.getAllByRole("button", { name: /Update/i })[0];
+    fireEvent.click(updateButton);
+
+    const titleInput = screen.getByPlaceholderText(/Title/i);
+    const descriptionInput = screen.getByPlaceholderText(/Description/i);
+
+    fireEvent.change(titleInput, { target: { value: "Updated Test Issue 1" } });
+    fireEvent.change(descriptionInput, {
+      target: { value: "Updated Test Description 1" },
+    });
+
+    const saveButton = screen.getByRole("button", { name: /Save Changes/i });
+    fireEvent.click(saveButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Updated Test Issue 1/i)).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/Updated Test Description 1/i)
+      ).toBeInTheDocument();
+    });
+  });
+
+  test("deletes an issue", async () => {
+    render(<App />);
+
+    await waitFor(() => {
+      expect(
+        screen.getAllByRole("button", { name: /Delete/i })[0]
+      ).toBeInTheDocument();
+    });
+
+    const deleteButton = screen.getAllByRole("button", { name: /Delete/i })[0];
+
+    fireEvent.click(deleteButton);
+
+    await waitFor(() => {
+      const deletedIssue = screen.queryByText(/Test Issue 1/i);
+      expect(deletedIssue).not.toBeInTheDocument();
+    });
+  });
 });
