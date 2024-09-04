@@ -1,9 +1,8 @@
+const API_URL = process.env.REACT_APP_API_URL;
+
 export const mockFetch = () => {
   global.fetch = jest.fn((url, options) => {
-    if (
-      url === "http://localhost:3001/issues" &&
-      (!options || options.method === "GET")
-    ) {
+    if (url === API_URL && (!options || options.method === "GET")) {
       return Promise.resolve({
         json: () =>
           Promise.resolve([
@@ -22,7 +21,7 @@ export const mockFetch = () => {
       });
     }
 
-    if (url === "http://localhost:3001/issues" && options?.method === "POST") {
+    if (url === API_URL && options?.method === "POST") {
       return Promise.resolve({
         json: () =>
           Promise.resolve({
@@ -34,10 +33,7 @@ export const mockFetch = () => {
       });
     }
 
-    if (
-      url.startsWith("http://localhost:3001/issues/") &&
-      options?.method === "PUT"
-    ) {
+    if (url.startsWith(API_URL) && options?.method === "PUT") {
       const id = parseInt(url.split("/").pop(), 10);
       return Promise.resolve({
         json: () =>
@@ -50,10 +46,7 @@ export const mockFetch = () => {
       });
     }
 
-    if (
-      url.startsWith("http://localhost:3001/issues/") &&
-      options.method === "DELETE"
-    ) {
+    if (url.startsWith(API_URL) && options.method === "DELETE") {
       return Promise.resolve({
         json: () => Promise.resolve({}),
         ok: true,
